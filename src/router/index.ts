@@ -1,11 +1,25 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
+import Recommend from '../application/Recommend/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    redirect: '/recommend',
+    children: [
+      {
+        path: '/recommend',
+        name: 'Recommend',
+        component: Recommend
+      },
+    ]
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../application/Search/index.vue')
   },
   {
     path: '/about',

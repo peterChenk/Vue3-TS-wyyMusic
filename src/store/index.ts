@@ -1,12 +1,17 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
+import recommend from './modules/recommend';
+import { IRecommendState } from '../typings/recommend';
 
-export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+export interface GlobalState {
+  recommend: IRecommendState;
+}
+
+export default createStore<GlobalState>({
+  // state: {
+  // },
+  mutations: {},
+  actions: {},
   modules: {
+    recommend
   }
 })
