@@ -1,21 +1,21 @@
 <template>
   <div class="content">
-    <!-- <Scroll> -->
-      <div class="ccrollContainer">
+    <Scroll>
+      <div>
         <Slider></Slider>
         <RecommendList></RecommendList>
       </div>
-    <!-- </Scroll> -->
+    </Scroll>
   </div>
 </template>
 <script lang="ts">
-// import Scroll from '../../baseUI/scroll/index.vue';
+import Scroll from '../../baseUI/scroll/index.vue';
 import Slider from '../../components/slider/index.vue';
 import RecommendList from '../../components/list/index.vue';
 import { defineComponent } from 'vue'
 export default defineComponent({
   components: {
-    // Scroll,
+    Scroll,
     Slider,
     RecommendList
   }
