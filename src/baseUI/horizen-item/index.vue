@@ -4,6 +4,7 @@
       <div class="List">
         <span>{{title}}</span>
         <span class="ListItem"
+              :class="{'selected': item.key === oldVal}"
               v-for="item in list"
               :key="item.key"
               @click="clickHandle(item.key)">
@@ -23,6 +24,7 @@ export default defineComponent({
   props: {
     title: String,
     list: Array,
+    oldVal: String
   },
   setup(props, { emit }) {
     const Category = ref<null | HTMLElement>(null);

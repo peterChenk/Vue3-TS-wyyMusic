@@ -6,6 +6,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import BScroll from 'better-scroll'
+import { useExpose } from '@/composition/use-expose';
 export default defineComponent({
   props: {
     /**
@@ -141,6 +142,7 @@ export default defineComponent({
       // 代理better-scroll的scrollToElement方法
       scroll && scroll.scrollToElement.apply(scroll, ...args)
     }
+    useExpose({ refresh })
 
     onMounted(() => {
       setTimeout(() => {
@@ -149,7 +151,8 @@ export default defineComponent({
     })
 
     return {
-      scrollContaninerRef
+      scrollContaninerRef,
+      refresh
     }
   }
 })

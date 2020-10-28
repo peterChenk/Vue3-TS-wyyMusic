@@ -18,8 +18,20 @@ const routes: Array<RouteRecordRaw> = [
         path: '/singers',
         name: 'Singers',
         component: () => import('../application/Singers/index.vue')
-      },
+        // children: [
+        //   {
+        //     path: '/singers/:id',
+        //     name: 'Singer',
+        //     component: () => import('../application/Singer/index.vue')
+        //   }
+        // ]
+      }
     ]
+  },
+  {
+    path: '/singers/:id',
+    name: 'Singer',
+    component: () => import('../application/Singer/index.vue')
   },
   {
     path: '/search',

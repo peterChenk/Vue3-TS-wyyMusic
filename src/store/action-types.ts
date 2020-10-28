@@ -3,3 +3,27 @@ export const SET_SLIDER_LIST = 'SET_SLIDER_LIST'
 
 // 设置推荐歌曲列表
 export const CHANGE_RECOMMEND_LIST = 'CHANGE_RECOMMEND_LIST'
+
+// 设置当前歌手分类
+export const CHANGE_CATOGORY = 'CHANGE_CATOGORY'
+
+// 设置当前歌手字母
+export const CHANGE_ALPHA = 'CHANGE_ALPHA'
+
+// 获取热门歌手列表
+export const CHANGE_SINGER_LIST_HOT = 'CHANGE_SINGER_LIST_HOT'
+
+// 获取歌手列表
+export const CHANGE_SINGER_LIST = 'CHANGE_SINGER_LIST'
+
+//获取歌手详情
+export const SET_SINGER_INFO = 'SET_SINGER_INFO'
+
+// 设置歌手
+export const CHANGE_ARTIST = 'CHANGE_ARTIST'
+
+// 设置歌手歌曲
+export const CHANGE_SONGS_OF_ARTIST = 'CHANGE_SONGS_OF_ARTIST'
+
+// 设置加载状态
+export const CHANGE_ENTER_LOADING = 'CHANGE_ENTER_LOADING'
