@@ -15,7 +15,7 @@
           <div class="info">
             <span>{{item.name}}</span>
             <span>
-              {{ item.ar ? getNames(item.ar): getNames(item.artists) }} - {{ item.al ? item.al.name : item.album.name }}
+              {{ item.ar ? getNames(item.ar) : getNames(item.artists) }} - {{ item.al ? item.al.name : item.album.name }}
             </span>
           </div>
         </li>
@@ -46,7 +46,7 @@ export default defineComponent({
     }
 
     function getNames(list: any) {
-      getName(list)
+      return getName(list)
     }
 
     return {

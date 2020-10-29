@@ -10,14 +10,16 @@ import { defineComponent, PropType } from 'vue'
 export default defineComponent({
   props: {
     isMarquee: Boolean,
-    title: String,
-    propsClick: {
-      type: Function as PropType<() => void>
-    }
+    title: String
+    // propsClick: {
+    //   type: Function as PropType<() => void>
+    // }
   },
-  setup(props) {
+  emits: ['props-click'],
+  setup(props, context) {
     function handleClick() {
-      props.propsClick
+      // console.log('props.propsClick', props.propsClick)
+      context.emit('props-click')
     }
 
     return {
