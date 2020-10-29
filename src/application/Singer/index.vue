@@ -12,7 +12,7 @@
     </div>
     <div class="BgLayer className" ref="layer"></div>
     <div class="SongListWrapper" ref="songScrollWrapper">
-      <Scroll :listenScroll="true" @scroll="handleScroll" ref="songScroll">
+      <Scroll :listenScroll="true" :probeType="3" @scroll="handleScroll" ref="songScroll">
         <SongsList :songs="songs" :showCollect="false" :usePageSplit="false"></SongsList>
       </Scroll>
     </div>
@@ -21,7 +21,7 @@
 <script lang="ts">
 import router from '@/router';
 import { ISingerState } from '@/typings/singer';
-import { computed, defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, reactive, ref, toRefs } from 'vue'
 import { useStore } from 'vuex';
 import Header from "../../baseUI/header/index.vue";
 import * as Types from '@/store/action-types'
@@ -53,20 +53,22 @@ export default defineComponent({
     }
 
     const OFFSET = 5;
-    let initialHeight = 0
+    // let initialHeight = 0
+    const initialHeight = ref(0)
 
     const imageWrapper = ref<null | HTMLElement>(null)
     const songScrollWrapper = ref<null | HTMLElement>(null)
     const layer = ref<null | HTMLElement>(null)
     const songScroll = ref()
-    onMounted(() => {
+    onMounted(async () => {
       const h: number = imageWrapper?.value?.offsetHeight as number
-      initialHeight = h
+      initialHeight.value = h
       const scrollWrapper = songScrollWrapper?.value?.style
       if (scrollWrapper && h) scrollWrapper.top = `${h - OFFSET}px`;
       //把遮罩先放在下面，以裹住歌曲列表
       const layerStyle = layer?.value?.style
       if (layerStyle && h) layerStyle.top = `${h - OFFSET}px`;
+      await nextTick()
       songScroll.value.refresh()
     })
 
@@ -75,7 +77,7 @@ export default defineComponent({
 
     function handleScroll(pos: any) {
       console.log('handleScroll', pos)
-      const height = initialHeight
+      const height = initialHeight.value
       const newY = pos.y
       const imageDOM = imageWrapper.value
       const buttonDOM = collectButton.value
