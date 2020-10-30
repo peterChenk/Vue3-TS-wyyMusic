@@ -25,7 +25,19 @@ const routes: Array<RouteRecordRaw> = [
         //     component: () => import('../application/Singer/index.vue')
         //   }
         // ]
-      }
+      },
+      {
+        path: '/rank',
+        name: 'Rank',
+        component: () => import('../application/Rank/index.vue')
+        // children: [
+        //   {
+        //     path: '/singers/:id',
+        //     name: 'Singer',
+        //     component: () => import('../application/Singer/index.vue')
+        //   }
+        // ]
+      },
     ]
   },
   {
