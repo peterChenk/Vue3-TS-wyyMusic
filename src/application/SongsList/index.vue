@@ -35,6 +35,7 @@ export default defineComponent({
     collectCount: Number
   },
   setup(props) {
+    const totalCount = props?.songs?.length
     // let startIndex = ref<number>(0);
     let startIndex = 0;
     startIndex = startIndex + ONE_PAGE_COUNT;
@@ -51,7 +52,8 @@ export default defineComponent({
 
     return {
       end,
-      getNames
+      getNames,
+      totalCount
     }
   }
 });
