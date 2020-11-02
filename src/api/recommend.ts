@@ -9,3 +9,8 @@ export function getBannerRequest<T>() {
 export function getRecommendListRequest<T>() {
   return axios.get<T, T>("/personalized")
 }
+
+// 获取排行榜接口
+export function getRankListRequest<T>() {
+  return axios.get<T, T>(`/toplist/detail`)
+}

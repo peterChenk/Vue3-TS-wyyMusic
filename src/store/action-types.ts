@@ -27,3 +27,9 @@ export const CHANGE_SONGS_OF_ARTIST = 'CHANGE_SONGS_OF_ARTIST'
 
 // 设置加载状态
 export const CHANGE_ENTER_LOADING = 'CHANGE_ENTER_LOADING'
+
+// 获取排行榜列表
+export const CHANGE_RANK_LIST = 'CHANGE_RANK_LIST'
+
+// 改变加载状态
+export const CHANGE_LOADING = 'CHANGE_LOADING'
