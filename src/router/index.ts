@@ -12,7 +12,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/recommend',
         name: 'Recommend',
-        component: Recommend
+        component: Recommend,
+        // children: [
+        //   {
+        //     path: '/recommend/:id',
+        //     name: 'Album',
+        //     component: () => import('../application/Album/index.vue')
+        //   }
+        // ]
       },
       {
         path: '/singers',
@@ -39,6 +46,11 @@ const routes: Array<RouteRecordRaw> = [
         // ]
       },
     ]
+  },
+  {
+    path: '/recommend/:id',
+    name: 'Album',
+    component: () => import('../application/Album/index.vue')
   },
   {
     path: '/singers/:id',

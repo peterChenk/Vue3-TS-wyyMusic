@@ -2,7 +2,7 @@
   <div class="ListWrapper">
     <h1 className="title">推荐歌单</h1>
     <div class="list">
-      <div class="ListItem" v-for="item in recommodList.result" :key="item.id">
+      <div class="ListItem" v-for="item in recommodList.result" :key="item.id" @click="enterDetail(item.id)">
         <div class="img_wrapper">
           <div className="decorate"></div>
           <img :src="item.picUrl"
@@ -24,6 +24,7 @@ import { GlobalState } from '@/store';
 import { computed, defineComponent } from "vue";
 import { useStore } from 'vuex';
 import * as Types from '@/store/action-types'
+import router from '@/router';
 export default defineComponent({
   setup() {
     const store = useStore<GlobalState>()
@@ -32,8 +33,13 @@ export default defineComponent({
       store.dispatch(`recommend/${Types.CHANGE_RECOMMEND_LIST}`)
     }
 
+    function enterDetail(id: number) {
+      router.push(`/recommend/${id}`)
+    }
+
     return {
-      recommodList
+      recommodList,
+      enterDetail
     }
   }
 });
