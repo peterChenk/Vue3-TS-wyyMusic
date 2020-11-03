@@ -1,19 +1,76 @@
 <template>
   <div class="Container">
-    <Header></Header>
-    <Scroll>
-      <AlbumDetail></AlbumDetail>
+    <Header :title="title" @propsClick="handleBack" :isMarquee="isMarquee" :ref="headerEl"></Header>
+    <Scroll :listenScroll="true" :probeType="3" @scroll="handleScroll" ref="songScroll">
+      <AlbumDetail :currentAlbum="currentAlbum.playlist"></AlbumDetail>
     </Scroll>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import Header from '@/baseUI/header/index.vue'
 import Scroll from '@/baseUI/scroll/index.vue'
+import AlbumDetail from '@/components/album-detail/index.vue';
+import { useStore } from 'vuex';
+import { GlobalState } from '@/store';
+import * as Types from '@/store/action-types'
+import router from '@/router';
+import { HEADER_HEIGHT } from '@/api/config';
 export default defineComponent({
   components: {
     Header,
-    Scroll
+    Scroll,
+    AlbumDetail
+  },
+  setup() {
+    const store = useStore<GlobalState>()
+    const id = router.currentRoute.value.params.id
+    store.dispatch(`album/${Types.CHANGE_CURRENT_ALBUM}`, id)
+    const currentAlbum = computed(() => store.state.album.currentAlbum)
+
+    const title = ref('歌单')
+    const isMarquee = ref(false)
+    // const headerEl = ref<null | HTMLElement>(null)
+    let headerDom: any = null
+    const headerEl = (el: any) => {
+      headerDom = el.$el
+    }
+
+    function handleScroll(pos: any) {
+      const minScrollY = -HEADER_HEIGHT;
+      const percent = Math.abs(pos.y/minScrollY);
+      // const headerDom = headerEl.value;
+      // 获取组件的dom应用
+      // console.log('headerDom', headerDom)
+      const headerDomStyle = headerDom?.style
+      if (pos.y < minScrollY) { 
+        if(headerDomStyle) {
+          headerDomStyle.backgroundColor = '#d44439';
+          headerDomStyle.opacity = Math.min(1, (percent-1)/2) + '';
+        }
+        title.value = currentAlbum.value&&currentAlbum.value.playlist.name;
+        isMarquee.value = true;
+      } else {
+        if (headerDomStyle) {
+          headerDomStyle.backgroundColor = "";
+          headerDomStyle.opacity = '1';
+        }
+        title.value = "歌单";
+        isMarquee.value = false;
+      }
+    }
+
+    function handleBack() {
+      router.back()
+    }
+    return {
+      currentAlbum,
+      handleBack,
+      title,
+      isMarquee,
+      headerEl,
+      handleScroll
+    }
   }
 })
 </script>

@@ -6,7 +6,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref, watch } from 'vue'
 export default defineComponent({
   props: {
     isMarquee: Boolean,
@@ -17,6 +17,10 @@ export default defineComponent({
   },
   emits: ['props-click'],
   setup(props, context) {
+    const isMarquee = ref(props.isMarquee)
+    watch(isMarquee, (newVal, oldVal)=> {
+      console.log('newVal, oldVal', newVal, oldVal)
+    })
     function handleClick() {
       // console.log('props.propsClick', props.propsClick)
       context.emit('props-click')

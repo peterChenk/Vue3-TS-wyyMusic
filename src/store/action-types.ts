@@ -33,3 +33,15 @@ export const CHANGE_RANK_LIST = 'CHANGE_RANK_LIST'
 
 // 改变加载状态
 export const CHANGE_LOADING = 'CHANGE_LOADING'
+
+// 获取专辑详情
+export const CHANGE_CURRENT_ALBUM = 'CHANGE_CURRENT_ALBUM'
+
+// 设置专辑加载状态
+export const CHANGE_PULLUP_LOADING = 'CHANGE_PULLUP_LOADING'
+
+// 设置开始索引
+export const CHANGE_START_INDEX = 'CHANGE_START_INDEX'
+
+// 设置总数目
+export const CHANGE_TOTAL_COUNT = 'CHANGE_TOTAL_COUNT'

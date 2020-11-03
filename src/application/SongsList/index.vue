@@ -1,5 +1,5 @@
 <template>
-  <div class="SongList">
+  <div class="SongList" :style="{background: showBackground ? '#fff' : ''}">
     <div class="first_line">
       <div class="play_all" @click="selectItem($event, 0)">
         <i class="iconfont">&#xe6e3;</i>
@@ -9,17 +9,17 @@
         <i class="iconfont">&#xe62d;</i>
         <span>收藏({{Math.floor(collectCount/1000)/10}}万)</span>
       </div>
-      <div class="SongItem">
-        <li v-for="(item, i) in songs" :key="item.id" @click="selectItem($event, i)">
-          <span class="index">{{i + 1}}</span>
-          <div class="info">
-            <span>{{item.name}}</span>
-            <span>
-              {{ item.ar ? getNames(item.ar) : getNames(item.artists) }} - {{ item.al ? item.al.name : item.album.name }}
-            </span>
-          </div>
-        </li>
-      </div>
+    </div>
+    <div class="SongItem">
+      <li v-for="(item, i) in songs" :key="item.id" @click="selectItem($event, i)">
+        <span class="index">{{i + 1}}</span>
+        <div class="info">
+          <span>{{item.name}}</span>
+          <span>
+            {{ item.ar ? getNames(item.ar) : getNames(item.artists) }} - {{ item.al ? item.al.name : item.album.name }}
+          </span>
+        </div>
+      </li>
     </div>
   </div>
 </template>
@@ -32,7 +32,8 @@ export default defineComponent({
     usePageSplit: String,
     songs: Array,
     showCollect: Boolean,
-    collectCount: Number
+    collectCount: Number,
+    showBackground: Boolean
   },
   setup(props) {
     const totalCount = props?.songs?.length

@@ -1,52 +1,64 @@
 <template>
-  <div class="TopDesc">
-    <div className="background">
-      <div className="filter"></div>
-    </div>
-    <div className="img_wrapper">
-      <div className="decorate"></div>
-      <img :src="currentAlbum.coverImgUrl" alt=""/>
-      <div className="play_count">
-        <i className="iconfont play">&#xe885;</i>
-        <span className="count">{Math.floor(currentAlbum.subscribedCount/1000)/10}万</span>
+  <div>
+    <div class="TopDesc">
+      <div className="background" :style="{backgroundImage: 'url('+ currentAlbum.coverImgUrl +')'}">
+        <div className="filter"></div>
       </div>
-    </div>
-    <div className="desc_wrapper">
-      <div className="title">{currentAlbum.name}</div>
-      <div className="person">
-        <div className="avatar">
-          <img :src="currentAlbum.creator.avatarUrl" alt=""/>
+      <div className="img_wrapper">
+        <div className="decorate"></div>
+        <img :src="currentAlbum.coverImgUrl" alt=""/>
+        <div className="play_count">
+          <i className="iconfont play">&#xe885;</i>
+          <span className="count">{{Math.floor(currentAlbum.subscribedCount/1000)/10}}万</span>
         </div>
-        <div className="name">{currentAlbum.creator.nickname}</div>
+      </div>
+      <div className="desc_wrapper">
+        <div className="title">{{currentAlbum.name}}</div>
+        <div className="person">
+          <div className="avatar">
+            <img :src="currentAlbum.creator.avatarUrl" alt=""/>
+          </div>
+          <div className="name">{{currentAlbum.creator.nickname}}</div>
+        </div>
       </div>
     </div>
+    <div class="Menu">
+      <div>
+        <i className="iconfont">&#xe6ad;</i>
+        评论
+      </div>
+      <div>
+        <i className="iconfont">&#xe86f;</i>
+        点赞
+      </div>
+      <div>
+        <i className="iconfont">&#xe62d;</i>
+        收藏
+      </div>
+      <div>
+        <i className="iconfont">&#xe606;</i>
+        更多
+      </div>
+    </div>
+    <SongsList 
+      :songs="currentAlbum.tracks" 
+      :collectCount="currentAlbum.subscribedCount"
+      :showCollect="true"
+      :showBackground="true"
+      >
+    </SongsList>
   </div>
-  <div class="Menu">
-    <div>
-      <i className="iconfont">&#xe6ad;</i>
-      评论
-    </div>
-    <div>
-      <i className="iconfont">&#xe86f;</i>
-      点赞
-    </div>
-    <div>
-      <i className="iconfont">&#xe62d;</i>
-      收藏
-    </div>
-    <div>
-      <i className="iconfont">&#xe606;</i>
-      更多
-    </div>
-  </div>
-  <SongsList></SongsList>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
-import SongsList from '../../application/SongList/index.vue';
+import { defineComponent, PropType } from 'vue'
+import SongsList from '@/application/SongsList/index.vue';
+import { Album } from '@/typings/Album';
 export default defineComponent({
   components: {
     SongsList
+  },
+  props: {
+    currentAlbum: Object as PropType<Album>
   }
 })
 </script>

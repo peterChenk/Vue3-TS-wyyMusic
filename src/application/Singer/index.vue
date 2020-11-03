@@ -76,7 +76,6 @@ export default defineComponent({
     const header = ref<null | HTMLElement>(null)
 
     function handleScroll(pos: any) {
-      console.log('handleScroll', pos)
       const height = initialHeight.value
       const newY = pos.y
       const imageDOM = imageWrapper.value
