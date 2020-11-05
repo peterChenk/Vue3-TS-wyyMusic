@@ -7,7 +7,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import Header from '@/baseUI/header/index.vue'
 import Scroll from '@/baseUI/scroll/index.vue'
 import AlbumDetail from '@/components/album-detail/index.vue';
@@ -32,9 +32,12 @@ export default defineComponent({
     const isMarquee = ref(false)
     // const headerEl = ref<null | HTMLElement>(null)
     let headerDom: any = null
-    const headerEl = (el: any) => {
-      headerDom = el.$el
-    }
+    let headerEl
+    onMounted(() => {
+      headerEl = (el: any) => {
+        headerDom = el.$el
+      }
+    })
 
     function handleScroll(pos: any) {
       const minScrollY = -HEADER_HEIGHT;

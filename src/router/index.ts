@@ -48,7 +48,7 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/recommend/:id',
+    path: '/album/:id',
     name: 'Album',
     component: () => import('../application/Album/index.vue')
   },

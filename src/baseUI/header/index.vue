@@ -17,10 +17,10 @@ export default defineComponent({
   },
   emits: ['props-click'],
   setup(props, context) {
-    const isMarquee = ref(props.isMarquee)
-    watch(isMarquee, (newVal, oldVal)=> {
-      console.log('newVal, oldVal', newVal, oldVal)
-    })
+    // const isMarquee = ref(props.isMarquee)
+    // watch(isMarquee, (newVal, oldVal)=> {
+    //   console.log('newVal, oldVal', newVal, oldVal)
+    // })
     function handleClick() {
       // console.log('props.propsClick', props.propsClick)
       context.emit('props-click')

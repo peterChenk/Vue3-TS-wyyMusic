@@ -14,3 +14,11 @@ $background-color: #f2f3f4;
 $background-color-shadow: rgba(0, 0, 0, 0.3);
 $highlight-background-color: #fff;
 $official-red: #E82001;
+@mixin extendClick{
+  position: relative;
+  &:before{
+    content: '';
+    position: absolute;
+    top: -10px; bottom: -10px; left: -10px; right: -10px;
+  };
+}

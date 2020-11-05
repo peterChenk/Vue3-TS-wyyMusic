@@ -4,7 +4,7 @@
       <div>
         <h1 class="offical">官方榜</h1>
         <ul class="List">
-          <li class="ListItem" v-for="(item, index) in officialList" :key="item.coverImgId + '' +  index">
+          <li class="ListItem" v-for="(item, index) in officialList" :key="item.coverImgId + '' +  index" @click="enterDetail(item.id)">
             <div className="img_wrapper">
               <img :src="item.coverImgUrl" alt=""/>
               <div className="decorate"></div>
@@ -17,7 +17,7 @@
         </ul>
         <h1 class="global">全球榜</h1>
         <ul class="List globalList">
-          <li class="ListItem" v-for="(item, index) in globalList" :key="item.coverImgId + '' +  index">
+          <li class="ListItem" v-for="(item, index) in globalList" :key="item.coverImgId + '' +  index" @click="enterDetail(item.id)">
             <div className="img_wrapper">
               <img :src="item.coverImgUrl" alt=""/>
               <div className="decorate"></div>
@@ -36,6 +36,7 @@ import { useStore } from 'vuex'
 import { GlobalState } from '@/store'
 import * as Types from '@/store/action-types'
 import { filterIndex } from '@/api/utils'
+import router from '@/router'
 export default defineComponent({
   components: {
     Scroll
@@ -51,9 +52,14 @@ export default defineComponent({
     const officialList = rankList.slice(0, globalStartIndex);
     const globalList = rankList.slice(globalStartIndex);
 
+    function enterDetail(id: number) {
+      router.push(`/album/${id}`)
+    }
+
     return {
       officialList,
-      globalList
+      globalList,
+      enterDetail
     }
   }
 })

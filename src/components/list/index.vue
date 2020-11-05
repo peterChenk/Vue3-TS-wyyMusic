@@ -34,7 +34,7 @@ export default defineComponent({
     }
 
     function enterDetail(id: number) {
-      router.push(`/recommend/${id}`)
+      router.push(`/album/${id}`)
     }
 
     return {
