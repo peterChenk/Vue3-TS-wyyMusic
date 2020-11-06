@@ -45,3 +45,15 @@ export const CHANGE_START_INDEX = 'CHANGE_START_INDEX'
 
 // 设置总数目
 export const CHANGE_TOTAL_COUNT = 'CHANGE_TOTAL_COUNT'
+
+// 设置热搜关键词
+export const SET_HOT_KEYWRODS = 'SET_HOT_KEYWRODS'
+
+// 设置推荐歌曲列表
+export const SET_SUGGEST_LIST = 'SET_SUGGEST_LIST'
+
+// 
+export const SET_RESULT_SONGS_LIST = 'SET_RESULT_SONGS_LIST'
+
+// 
+export const SET_ENTER_LOADING = 'SET_ENTER_LOADING'

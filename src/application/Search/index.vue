@@ -9,8 +9,8 @@
           <div class="HotKey">
             <h1 class="title">热门搜索</h1>
             <ul>
-              <li class="item" key="item.first" @click="setQuery('item.first')">
-                <span>{item.first}</span>
+              <li class="item" v-for="(item) in hotList" :key="item.first" @click="setQuery('item.first')">
+                <span>{{item.first}}</span>
               </li>
             </ul>
           </div>
@@ -20,16 +20,26 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import SearchBox from '@/baseUI/search-box/index.vue'
 import Scroll from '@/baseUI/scroll/index.vue'
 import router from '@/router'
+import { useStore } from 'vuex'
+import { GlobalState } from '@/store'
+import * as Types from '@/store/action-types'
 export default defineComponent({
   components: {
     SearchBox,
     Scroll
   },
   setup() {
+    const store = useStore<GlobalState>()
+    const hotList = computed(() => store.state.search.hotList)
+    debugger
+    if (!hotList.value.length) {
+      store.dispatch(`search/${Types.SET_HOT_KEYWRODS}`)
+    }
+
     const query = ref('')
 
     function searchBack() {
@@ -51,7 +61,8 @@ export default defineComponent({
       searchBack,
       query,
       handleQuery,
-      setQuery
+      setQuery,
+      hotList
     }
   }
 })

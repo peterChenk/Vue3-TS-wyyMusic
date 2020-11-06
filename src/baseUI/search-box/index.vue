@@ -8,7 +8,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 export default defineComponent({
-  setup() {
+  emits: ['back'],
+  setup(props, context) {
 
     const queryRef = ref(null)
 
@@ -21,7 +22,7 @@ export default defineComponent({
     }
     
     function back() {
-      console.log('back')
+      context.emit('back')
     }
     return {
       queryRef,
