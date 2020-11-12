@@ -1,3 +1,4 @@
+import { computed } from 'vue'
 // 处理歌手列表拼接歌手名字
 export function getName(list: any) {
   let str = "";
@@ -15,4 +16,11 @@ export function filterIndex(rankList: any) {
       return i + 1;
     }
   }
+}
+
+export function useModelWrapper(props: any, emit: any, name = 'modelValue') { 
+  return computed({ 
+    get: () => props[name], 
+    set: (value) => emit(`update:${name}`, value) 
+  })
 }
