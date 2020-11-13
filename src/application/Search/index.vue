@@ -55,6 +55,7 @@
         </div>
       </Scroll>
     </div>
+    <MusicalNote ref="musicNoteRef"></MusicalNote>
   </div>
 </template>
 <script lang="ts">
@@ -66,10 +67,12 @@ import { useStore } from 'vuex'
 import { GlobalState } from '@/store'
 import * as Types from '@/store/action-types'
 import { getName } from '@/api/utils';
+import MusicalNote from '@/baseUI/music-note/index.vue';
 export default defineComponent({
   components: {
     SearchBox,
-    Scroll
+    Scroll,
+    MusicalNote
   },
   setup() {
     const store = useStore<GlobalState>()
@@ -94,8 +97,11 @@ export default defineComponent({
 
     // 歌曲
     const songsList = computed(() => store.state.search.songsList)
+
+    const musicNoteRef = ref()
     function selectItem (e: any, id: number) {
       // getSongDetailDispatch(id);
+      musicNoteRef.value.startAnimation({x: e.clientX, y: e.clientY})
     }
 
     const query = ref('')
@@ -136,7 +142,8 @@ export default defineComponent({
       selectItem,
       gotoSingers,
       gotoAlbum,
-      getNames
+      getNames,
+      musicNoteRef
     }
   }
 })

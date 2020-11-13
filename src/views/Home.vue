@@ -31,16 +31,19 @@
       </router-link>
     </div>
     <router-view />
+
+    <Player></Player>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import router from '@/router';
-
+import Player from "@/application/Player/index.vue";
 export default defineComponent({
   name: "Home",
   components: {
+    Player
   },
   setup() {
     function goToSearch() {
