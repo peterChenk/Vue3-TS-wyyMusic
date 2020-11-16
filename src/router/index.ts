@@ -45,6 +45,11 @@ const routes: Array<RouteRecordRaw> = [
         //   }
         // ]
       },
+      {
+        path: '/search',
+        name: 'Search',
+        component: () => import('../application/Search/index.vue')
+      },
     ]
   },
   {
@@ -56,11 +61,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/singers/:id',
     name: 'Singer',
     component: () => import('../application/Singer/index.vue')
-  },
-  {
-    path: '/search',
-    name: 'Search',
-    component: () => import('../application/Search/index.vue')
   },
   {
     path: '/about',

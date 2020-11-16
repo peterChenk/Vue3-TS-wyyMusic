@@ -11,3 +11,7 @@ export function getSuggestListRequest<T> (query: string) {
 export function getResultSongsListRequest<T> (query: string) {
   return axios.get<T, T>(`/search?keywords=${query}`);
 }
+
+export function getSongDetailRequest<T> (id: number) {
+  return axios.get<T, T>(`/song/detail?ids=${id}`);
+}

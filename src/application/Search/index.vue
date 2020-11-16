@@ -100,7 +100,7 @@ export default defineComponent({
 
     const musicNoteRef = ref()
     function selectItem (e: any, id: number) {
-      // getSongDetailDispatch(id);
+      store.dispatch('player/getSongDetail',id)
       musicNoteRef.value.startAnimation({x: e.clientX, y: e.clientY})
     }
 

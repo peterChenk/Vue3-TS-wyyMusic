@@ -31,7 +31,6 @@
       </router-link>
     </div>
     <router-view />
-
     <Player></Player>
   </div>
 </template>

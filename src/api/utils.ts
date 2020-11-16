@@ -70,3 +70,40 @@ export function prefixStyle(style) {
   }
   return vendor + style.charAt(0).toUpperCase() + style.substr(1);
 }
+
+// 找到当前的歌曲索引
+export const findIndex = (song, list) => {
+  return list.findIndex(item => {
+    return song.id === item.id;
+  });
+};
+
+//拼接出歌曲的url链接
+export const getSongUrl = id => {
+  return `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
+};
+//除去手机号码的空格符号
+
+export const trimPhone = val => val.replace(/(^\s+)|(\s+$)|\s+/g, "");
+
+//判断一个对象是否为空对象
+export const isEmptyObject = obj => !obj || Object.keys(obj).length === 0;
+
+// 随机算法
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+export function shuffle(arr) {
+  const newArr: any = [];
+  arr.forEach(item => {
+    newArr.push(item);
+  });
+  for (let i = 0; i < newArr.length; i++) {
+    const j = getRandomInt(0, i);
+    const t = newArr[i];
+    newArr[i] = newArr[j];
+    newArr[j] = t;
+  }
+  return newArr;
+}
