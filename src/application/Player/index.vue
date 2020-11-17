@@ -9,19 +9,18 @@
                 @clickPlaying="clickPlaying"
                 @setfullscreen="toggleFullScreenDispatch"
                 @toggleplaylist="togglePlayListDispatch"></MiniPlayer>
-    <!-- <PlayList></PlayList>
+    <!-- <PlayList></PlayList> -->
     <audio
       ref="audioRef"
-      onTimeUpdate={updateTime}
-      onEnded={handleEnd}
-      onError={handleError}
+      id="h5audio_media"
+      onended="handleEnd"
+      onerror="handleError"
     ></audio>
-    <Toast></Toast> -->
-    <p>{{playList}}</p>
+    <!-- <Toast></Toast> -->
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch, watchEffect } from "vue";
 import NormalPlayer from "./normal-player/index.vue";
 import MiniPlayer from "./mini-player/index.vue";
 import PlayList from "./play-list/index.vue";
@@ -43,10 +42,13 @@ export default defineComponent({
     
     const currentTime = ref(0)
     const duration = ref(0)
-    const percent = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
+    let percent = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
+
+    console.log('percent11', percent)
 
     let preSong = reactive({id: ''})
-    const songReady = ref(false)
+    const songReady = ref(true)
+    const audioRef = ref<null | HTMLAudioElement>(null)
     const currentPlayingLyric = ref('')
 
     const store = useStore<GlobalState>()
@@ -56,59 +58,94 @@ export default defineComponent({
     const fullScreen = computed(() => store.state.player.fullScreen)
     const currentSong = computed(() => store.state.player.currentSong)
     const currentIndex = computed(() => store.state.player.currentIndex)
+    const speed = computed(() => store.state.player.speed)
     console.log('playList', playList.value)
 
     function togglePlayingDispatch (state) {
       store.dispatch(`player/${Types.SET_PLAYING_STATE}`, state)
     }
 
-    // const getLyric = id => {
-    //   let lyric = "";
-    //   if (currentLyric.current) {
-    //     currentLyric.current.stop();
-    //   }
-    //   // 避免songReady恒为false的情况
-    //   setTimeout(() => {
-    //     songReady.current = true;
-    //   }, 3000);
-    //   getLyricRequest(id)
-    //     .then(data => {
-    //       lyric = data.lrc && data.lrc.lyric;
-    //       if(!lyric) {
-    //         currentLyric.current = null;
-    //         return;
-    //       }
-    //       currentLyric.current = new Lyric(lyric, handleLyric, speed);
-    //       currentLyric.current.play();
-    //       currentLineNum.current = 0;
-    //       currentLyric.current.seek(0);
-    //     })
-    //     .catch(() => {
-    //       currentLyric.current = "";
-    //       songReady.current = true;
-    //       audioRef.current.play();
-    //     });
-    // };
+    const getLyric = id => {
+      // let lyric = "";
+      // if (currentLyric.current) {
+      //   currentLyric.current.stop();
+      // }
+      // 避免songReady恒为false的情况
+      setTimeout(() => {
+        songReady.value = true;
+      }, 3000);
+      // getLyricRequest(id)
+      //   .then(data => {
+      //     lyric = data.lrc && data.lrc.lyric;
+      //     if(!lyric) {
+      //       currentLyric.current = null;
+      //       return;
+      //     }
+      //     currentLyric.current = new Lyric(lyric, handleLyric, speed);
+      //     currentLyric.current.play();
+      //     currentLineNum.current = 0;
+      //     currentLyric.current.seek(0);
+      //   })
+      //   .catch(() => {
+      //     currentLyric.current = "";
+      //     songReady.current = true;
+      //     audioRef.current.play();
+      //   });
+    };
+    function updateTime(e: any) {
+      currentTime.value = e.target.currentTime
+      console.log('currentTime.value', currentTime.value)
+    }
     // 初始化
-    if (!playList.value.length || 
+    const showMiniPlayer = ref(false)
+    let audioRefValue
+    onMounted(() => {
+      audioRefValue = audioRef.value
+      // 播放器监听
+      const Media = document.getElementById("h5audio_media")
+      if (Media) {
+        Media.addEventListener("timeupdate", function (event) {
+          updateTime(event)
+        })
+      }
+    })
+    // 观察currentIndex变化
+    watch(currentIndex, (newVal, oldVal) => {
+      if (!playList.value.length || 
         currentIndex.value === -1 ||
         !playList.value[currentIndex.value] ||
         playList.value[currentIndex.value].id === preSong.id ||
         !songReady.value) return
-    songReady.value = false
-    const current = playList[currentIndex.value]
-    store.dispatch(`player/${Types.SET_CURRENT_SONG}`, current)
-    preSong = current
-    currentPlayingLyric.value = ''
-    // audioRef.value.src = getSongUrl(current.id);
-    // audioRef.value.autoplay = true;
-    // audioRef.value.playbackRate = speed;
-    togglePlayingDispatch(true)
-    // getLyric(current.id)
-    currentTime.value = 0
-    duration.value = (current.dt / 1000) | 0
+        songReady.value = false
+        const current = playList.value[currentIndex.value]
+        store.dispatch(`player/${Types.SET_CURRENT_SONG}`, current)
+        preSong = current
+        currentPlayingLyric.value = ''
+        if (audioRefValue) {
+          audioRefValue.src = getSongUrl(current.id);
+          audioRefValue.autoplay = true;
+          audioRefValue.playbackRate = speed.value;
+        }
+        togglePlayingDispatch(true)
+        getLyric(current.id)
+        currentTime.value = 0
+        duration.value = (current.dt / 1000) | 0
 
-   
+        console.log('currentSong', currentSong)
+
+        if (!isEmptyObject(currentSong.value)) {
+          showMiniPlayer.value = true
+        }
+    })
+    watch(playing, (newVal, oldVal) => {
+      if (audioRefValue) {
+        newVal ? audioRefValue.play() : audioRefValue.pause();
+      }
+    })
+    watch(currentTime, (newVal, oldVal) => {
+      percent = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
+      console.log('percent', percent)
+    })
 
     // const currentLyric = ref(null)
 
@@ -125,10 +162,7 @@ export default defineComponent({
       store.dispatch(`player/${Types.SET_SHOW_PLAYLIST}`, data)
     }
 
-    const showMiniPlayer = ref(true)
-    if (isEmptyObject(currentSong.value)) {
-      showMiniPlayer.value = false
-    }
+    
     return {
       playing,
       fullScreen,
@@ -138,7 +172,8 @@ export default defineComponent({
       toggleFullScreenDispatch,
       togglePlayListDispatch,
       showMiniPlayer,
-      playList
+      playList,
+      audioRef
     }
   }
 });

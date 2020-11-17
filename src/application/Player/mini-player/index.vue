@@ -8,8 +8,7 @@
         <img class="play"
              :class="playing ? '': 'pause'"
              ref="miniImageRef"
-             src1="song.al.picUrl"
-             src=""
+             :src="song.al.picUrl"
              width="40"
              height="40"
              alt="img" />
@@ -20,7 +19,7 @@
       <p class="desc">{{getNames(song.ar)}}</p>
     </div>
     <div class="control">
-      <!-- <ProgressCircle radius={32} percent={percent}>
+      <ProgressCircle :radius="32" :percent="percent">
         <i class="icon-mini iconfont icon-pause"
           v-if="playing"
           @click="clickPlaying($event, false)"
@@ -29,7 +28,7 @@
           v-else
           @click="clickPlaying($event, true)"
           >&#xe61e;</i> 
-      </ProgressCircle> -->
+      </ProgressCircle>
     </div>
     <div class="control"
          @click="handleTogglePlayList($event)">
@@ -43,7 +42,7 @@ import { getName } from "@/api/utils";
 import ProgressCircle from "@/baseUI/progress-circle/index.vue";
 export default defineComponent({
   components: {
-    // ProgressCircle
+    ProgressCircle
   },
   props: {
     full: Boolean,
@@ -51,9 +50,9 @@ export default defineComponent({
     playing: Boolean,
     percent: Number,
   },
-  emits: ["setfullscreen", "toggleplaylist"],
+  emits: ["setfullscreen", "toggleplaylist", "click-playing"],
   setup(props, { emit }) {
-    console.log('初始化')
+    console.log('props.percent1', props.percent)
     const miniPlayerRef = ref<null | HTMLElement>(null);
     const miniWrapperRef = ref<null | HTMLElement>(null);
     const miniImageRef = ref<null | HTMLElement>(null);
@@ -64,6 +63,7 @@ export default defineComponent({
 
     function clickPlaying(e: any, flag: boolean) {
       console.log("e", e);
+      emit("click-playing", e, flag)
     }
 
     function handleTogglePlayList(e: any) {
@@ -82,6 +82,7 @@ export default defineComponent({
       miniImageRef,
       getNames,
       handleTogglePlayList,
+      clickPlaying
     };
   },
 });
