@@ -50,19 +50,17 @@ export default defineComponent({
     playing: Boolean,
     percent: Number,
   },
-  emits: ["setfullscreen", "toggleplaylist", "click-playing"],
+  emits: ["set-fullscreen", "toggleplaylist", "click-playing"],
   setup(props, { emit }) {
-    console.log('props.percent1', props.percent)
     const miniPlayerRef = ref<null | HTMLElement>(null);
     const miniWrapperRef = ref<null | HTMLElement>(null);
     const miniImageRef = ref<null | HTMLElement>(null);
 
     function setFullScreen(state) {
-      emit("setfullscreen", state);
+      emit("set-fullscreen", state);
     }
 
     function clickPlaying(e: any, flag: boolean) {
-      console.log("e", e);
       emit("click-playing", e, flag)
     }
 

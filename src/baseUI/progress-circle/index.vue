@@ -10,29 +10,36 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, toRefs, watch } from 'vue'
+import { defineComponent, inject, ref, toRefs, watch } from 'vue'
 export default defineComponent({
   props: {
-    radius: Number,
-    percent: Number
+    radius: Number
+    // percent: Number
   },
   setup (props) {
-    console.log('props.percent11', props.percent)
     // const { percent } = toRefs(props)
     //整个背景的周长
     const dashArray = Math.PI * 100;
     //没有高亮的部分，剩下高亮的就是进度
     const dashOffset = ref(0)
-    if (props.percent) {
-      dashOffset.value = (1 - props.percent) * dashArray;
-    }
+    
+    // 观察props的属性变化，改变圆圈的进度 (TS报错，暂时无法解决，用provide和inject代替)
     // watch(percent, (newVal, oldVal) => {
     //   console.log('props.percent22', newVal)
+        // if (percent) {
+        //   dashOffset.value = (1 - percent) * dashArray;
+        // }
     // })
+
+    const percent: any = inject('percent11')
+    watch(percent, (newVal, oldVal) => {
+      dashOffset.value = (1 - percent.value) * dashArray;
+    })
 
     return {
       dashArray,
-      dashOffset
+      dashOffset,
+      percent
     }
   }
 })

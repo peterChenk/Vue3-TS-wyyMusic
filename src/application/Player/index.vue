@@ -7,9 +7,9 @@
                 :song="currentSong"
                 :percent="percent"
                 @clickPlaying="clickPlaying"
-                @setfullscreen="toggleFullScreenDispatch"
+                @setFullscreen="toggleFullScreenDispatch"
                 @toggleplaylist="togglePlayListDispatch"></MiniPlayer>
-    <!-- <PlayList></PlayList> -->
+    <PlayList @clearPreSong="setPreSong()"></PlayList>
     <audio
       ref="audioRef"
       id="h5audio_media"
@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, watch, watchEffect } from "vue";
+import { computed, defineComponent, onMounted, provide, reactive, ref, watch, watchEffect } from "vue";
 import NormalPlayer from "./normal-player/index.vue";
 import MiniPlayer from "./mini-player/index.vue";
 import PlayList from "./play-list/index.vue";
@@ -33,7 +33,7 @@ export default defineComponent({
   components: {
     // NormalPlayer,
     MiniPlayer,
-    // PlayList,
+    PlayList,
     // Toast
   },
   props: {
@@ -42,9 +42,8 @@ export default defineComponent({
     
     const currentTime = ref(0)
     const duration = ref(0)
-    let percent = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
-
-    console.log('percent11', percent)
+    const percent = ref(0)
+    percent.value = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
 
     let preSong = reactive({id: ''})
     const songReady = ref(true)
@@ -59,7 +58,6 @@ export default defineComponent({
     const currentSong = computed(() => store.state.player.currentSong)
     const currentIndex = computed(() => store.state.player.currentIndex)
     const speed = computed(() => store.state.player.speed)
-    console.log('playList', playList.value)
 
     function togglePlayingDispatch (state) {
       store.dispatch(`player/${Types.SET_PLAYING_STATE}`, state)
@@ -94,7 +92,6 @@ export default defineComponent({
     };
     function updateTime(e: any) {
       currentTime.value = e.target.currentTime
-      console.log('currentTime.value', currentTime.value)
     }
     // 初始化
     const showMiniPlayer = ref(false)
@@ -131,8 +128,6 @@ export default defineComponent({
         currentTime.value = 0
         duration.value = (current.dt / 1000) | 0
 
-        console.log('currentSong', currentSong)
-
         if (!isEmptyObject(currentSong.value)) {
           showMiniPlayer.value = true
         }
@@ -143,23 +138,29 @@ export default defineComponent({
       }
     })
     watch(currentTime, (newVal, oldVal) => {
-      percent = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
-      console.log('percent', percent)
+      percent.value = isNaN(currentTime.value / duration.value) ? 0 : currentTime.value / duration.value;
+      // console.log('percent', percent)
     })
+    provide('percent11', percent)
 
     // const currentLyric = ref(null)
 
     function clickPlaying (e: any, state: boolean) {
       e.stopPropagation()
       togglePlayingDispatch(state)
-      console.log('playing', playing)
-
+      // if(currentLyric.current) {
+      //   currentLyric.current.togglePlay(currentTime*1000);
+      // }
     }
     function toggleFullScreenDispatch (data: boolean) {
       store.dispatch(`player/${Types.SET_FULL_SCREEN}`, data)
     }
     function togglePlayListDispatch (data: boolean) {
       store.dispatch(`player/${Types.SET_SHOW_PLAYLIST}`, data)
+    }
+
+    function setPreSong () {
+      preSong = {id: ''}
     }
 
     
@@ -173,7 +174,8 @@ export default defineComponent({
       togglePlayListDispatch,
       showMiniPlayer,
       playList,
-      audioRef
+      audioRef,
+      setPreSong
     }
   }
 });
