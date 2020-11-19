@@ -7,7 +7,7 @@
             <i class="iconfont" @click="changeMode($event)"  v-html="content"></i>
             <span class="text" @click="changeMode($event)">{{text}}</span>
           </div>
-          <span class="iconfont clear" @click="handleShowClear">&#xe63d;</span>
+          <span class="iconfont clear" @click="handleShowClear($event)">&#xe63d;</span>
         </h1>
       </div>
       <div class="ScrollWrapper">
@@ -27,8 +27,8 @@
         </Scroll>
       </div>
     </div>
+    <Confirm ref="confirmRef" text="是否删除全部?" cancelBtnText="取消" confirmBtnText="确定" @handleConfirm="handleConfirmClear"></Confirm>
   </div>
-  <Confirm ref="confirmRef" text="是否删除全部?" cancelBtnText="取消" confirmBtnText="确定" @handleConfirm="handleConfirmClear"></Confirm>
 </template>
 <script lang="ts">
 import { GlobalState } from '@/store';
@@ -124,7 +124,8 @@ export default defineComponent({
     }
 
     const confirmRef = ref()
-    function handleShowClear () {
+    function handleShowClear (e: any) {
+      e.stopPropagation()
       confirmRef.value.setShow(true)
     }
 

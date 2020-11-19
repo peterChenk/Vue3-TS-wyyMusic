@@ -56,9 +56,9 @@ const handleInsertSong = (state, song) => {
 }
 
 const handleDeleteSong = (state, song) => {
-  const playList = JSON.parse(JSON.stringify(state.get('playList').toJS()));
-  const sequenceList = JSON.parse(JSON.stringify(state.get('sequencePlayList').toJS()));
-  let currentIndex = state.get('currentIndex');
+  const playList = JSON.parse(JSON.stringify(state.playList));
+  const sequenceList = JSON.parse(JSON.stringify(state.sequencePlayList));
+  let currentIndex = state.currentIndex;
 
   const fpIndex = findIndex(song, playList);
   playList.splice(fpIndex, 1);

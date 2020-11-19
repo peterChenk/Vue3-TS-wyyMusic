@@ -9,7 +9,7 @@
                 @clickPlaying="clickPlaying"
                 @setFullscreen="toggleFullScreenDispatch"
                 @toggleplaylist="togglePlayListDispatch"></MiniPlayer>
-    <PlayList @clearPreSong="setPreSong()"></PlayList>
+    <PlayList @clearPreSong="setPreSong"></PlayList>
     <audio
       ref="audioRef"
       id="h5audio_media"
@@ -160,7 +160,8 @@ export default defineComponent({
     }
 
     function setPreSong () {
-      preSong = {id: ''}
+      // preSong = {id: ''}
+      console.log('setPreSong')
     }
 
     

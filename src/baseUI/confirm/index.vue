@@ -38,7 +38,8 @@ export default defineComponent({
 
     return {
       show,
-      setShow
+      setShow,
+      handleConfirm
     }
   }
 })
