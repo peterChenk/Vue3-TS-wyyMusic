@@ -13,7 +13,7 @@
       <div class="ScrollWrapper">
         <Scroll ref="listContentRef">
           <div class="ListContent">
-            <li v-for="(item, index) in playList" :key="item.id" class="item" @click="handleChangeCurrentIndex(index)">
+            <li v-for="(item, index) in playList" :key="item.id" class="item" @click="handleChangeCurrentIndex($event, index)">
               <i class="current iconfont" :class="currentSong.id === item.id ? 'icon-play' : ''" v-html="currentSong.id === item.id ? '&#xe6e3;' : ''"></i>
               <span class="text">{{item.name}} - {{getNames(item.ar)}}</span>
               <span class="like">
@@ -90,7 +90,8 @@ export default defineComponent({
       store.dispatch(`player/${Types.SET_PLAY_MODE}`, newMode)
     }
 
-    function handleChangeCurrentIndex(index: any) {
+    function handleChangeCurrentIndex(e: any, index: any) {
+      e.stopPropagation()
       if(currentIndex.value === index) return;
       // changeCurrentIndexDispatch(index);
       store.dispatch(`player/${Types.SET_CURRENT_INDEX}`, index)

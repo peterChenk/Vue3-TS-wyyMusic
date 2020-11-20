@@ -1,6 +1,7 @@
 <template>
   <div class="MiniPlayerContainer"
        ref="miniPlayerRef"
+       v-if="!full"
        @click="setFullScreen(true)">
     <div class="icon">
       <div class="imgWrapper"
