@@ -94,6 +94,9 @@ const player: Module<IplayerState, GlobalState> = {
     [Types.CHANGE_SPEED](state, payload) {
       state.speed = payload
     },
+    [Types.SET_PLAY_MODE](state, payload) {
+      state.mode = payload
+    },
     [Types.SET_CURRENT_INDEX](state, payload) {
       state.currentIndex = payload
     },
@@ -125,6 +128,9 @@ const player: Module<IplayerState, GlobalState> = {
     },
     [Types.CHANGE_SPEED]({commit}, data) {
       commit(Types.CHANGE_SPEED, data)
+    },
+    [Types.SET_PLAY_MODE]({commit}, data) {
+      commit(Types.SET_PLAY_MODE, data)
     },
     [Types.SET_CURRENT_INDEX]({commit}, data) {
       commit(Types.SET_CURRENT_INDEX, data)

@@ -20,8 +20,8 @@
       </div>
     </div>
     <!-- Middle -->
-    <div class="Middle">
-      <div class="CDWrapper">
+    <div class="Middle" @click="toggleCurrentState">
+      <div class="CDWrapper" :style="{visibility: currentState !== 'lyric' ? 'visible' : 'hidden'}">
         <div class="needle"
              :class="playing ? '' : 'pause'"></div>
         <div class="cd">
@@ -32,13 +32,20 @@
         </div>
         <p class="playing_lyric">{{currentPlayingLyric}}</p>
       </div>
-      <!-- <div class="LyricContainer">
-        <Scroll>
-          <div class="LyricWrapper" class="lyric_wrapper">
-            
+      <div class="LyricContainer">
+        <Scroll ref="lyricScrollRef">
+          <div class="LyricWrapper lyric_wrapper" :style="{visibility: currentState === 'lyric' ? 'visible' : 'hidden'}">
+            <template v-if="currentLyric">
+              <p  v-for="(item, index) in currentLyric.lines" :key="item" class="text" :class="{'current': currentLineNum === index}"
+                  :ref="el => { if (el) lyricLineRefs[i] = el }"
+                  >
+                {{item.txt}}
+              </p>
+            </template>
+            <p class="text pure">{{currentLyric}}纯音乐，请欣赏。</p>
           </div>
         </Scroll>
-      </div> -->
+      </div>
     </div>
     <div class="Bottom">
       <div class="List">
@@ -93,16 +100,18 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, toRefs } from "vue";
+import { computed, defineComponent, onBeforeUpdate, onMounted, ref, toRefs, watch } from "vue";
 import { getName, formatPlayTime } from "@/api/utils";
 import { useStore } from "vuex";
 import { GlobalState } from "@/store";
 import * as Types from "@/store/action-types";
 import { playMode, list } from "@/api/config";
 import ProgressBar from "@/baseUI/progress-bar/index.vue";
+import Scroll from '@/baseUI/scroll/index.vue'
 export default defineComponent({
   components: {
-    ProgressBar
+    ProgressBar,
+    Scroll
   },
   props: {
     song: Object,
@@ -110,14 +119,60 @@ export default defineComponent({
     playing: Boolean,
     speed: Number,
     currentPlayingLyric: String,
+    currentLyric: Object,
     duration: Number,
     currentTime: Number,
-    mode: Number
+    mode: Number,
+    currentLineNum: Number
   },
   emits: ['click-speed', 'on-progress-change', 'change-mode', 'handle-prev', 'click-playing', 'handle-next', 'toggleplaylist'],
+  watch: {
+    currentLineNum: 'watchCurrentLineNum'
+  },
   setup(props, {emit}) {
     const store = useStore<GlobalState>();
-    const { mode } = toRefs(props) 
+    const { mode, currentLineNum, currentLyric } = toRefs(props) 
+    console.log('currentLyric11', currentLyric?.value)
+
+    const currentState = ref('')
+
+    const lyricScrollRef = ref(null);
+
+    const lyricLineRefs = ref([])
+
+    // watch(currentLineNum, (newVal, oldVal) => {
+    //   if (!lyricScrollRef.value) return;
+    //   const bScroll = lyricScrollRef.value.getBScroll();
+    //   if (currentLineNum && currentLineNum.value > 5) {
+    //     const lineEl = lyricLineRefs.value[currentLineNum.value - 5].current;
+    //     bScroll.scrollToElement(lineEl, 1000);
+    //   } else {
+    //     bScroll.scrollTo(0, 0, 1000);
+    //   }
+    // })
+    let lyricScrollRefVal
+    onMounted(() => {
+      lyricScrollRefVal = lyricScrollRef?.value
+    })
+    function watchCurrentLineNum () {
+      if (!lyricScrollRef.value) return;
+      // const bScroll = lyricScrollRefVal.getBScroll();
+      const bScroll = lyricScrollRefVal;
+      if (currentLineNum && currentLineNum?.value && currentLineNum?.value > 5) {
+        let lineEl
+        if(currentLineNum?.value){
+          lineEl = lyricLineRefs?.value[currentLineNum?.value - 5];
+        }
+        bScroll.scrollToElement(lineEl, 1000);
+      } else {
+        bScroll.scrollTo(0, 0, 1000);
+      }
+    }
+
+    // 确保在每次更新之前重置ref
+    onBeforeUpdate(() => {
+      lyricLineRefs.value = []
+    })
 
     function toggleFullScreenDispatch(data: boolean) {
       // console.log('toggleFullScreenDispatch')
@@ -160,6 +215,15 @@ export default defineComponent({
     function togglePlayListDispatch (data: boolean) {
       emit('toggleplaylist', data)
     }
+    function toggleCurrentState () {
+      let nextState = "";
+      if (currentState.value !== "lyric") {
+        nextState = "lyric";
+      } else {
+        nextState = "";
+      }
+      currentState.value = nextState
+    }
 
     return {
       toggleFullScreenDispatch,
@@ -173,7 +237,12 @@ export default defineComponent({
       handlePrev,
       clickPlayingCB,
       handleNext,
-      togglePlayListDispatch
+      togglePlayListDispatch,
+      currentState,
+      toggleCurrentState,
+      lyricScrollRef,
+      lyricLineRefs,
+      watchCurrentLineNum
     };
   },
 });

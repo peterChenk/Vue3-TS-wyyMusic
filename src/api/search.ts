@@ -15,3 +15,7 @@ export function getResultSongsListRequest<T> (query: string) {
 export function getSongDetailRequest<T> (id: number) {
   return axios.get<T, T>(`/song/detail?ids=${id}`);
 }
+
+export function getLyricRequest<T> (id: number) {
+  return axios.get<T, T>(`/lyric?id=${id}`);
+}

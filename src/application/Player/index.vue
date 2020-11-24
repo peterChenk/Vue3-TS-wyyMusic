@@ -10,6 +10,8 @@
                   :mode="mode"
                   :modeText="modeText"
                   :currentPlayingLyric="currentPlayingLyric"
+                  :currentLineNum="currentLineNum"
+                  :currentLyric="currentLyric1"
                   @onProgressChange="onProgressChange"
                   @clickSpeed="clickSpeed"
                   @changeMode="changeMode"
@@ -17,6 +19,7 @@
                   @handleNext="handleNext"
                   @clickPlaying="clickPlaying"
                   @toggleplaylist="togglePlayListDispatch"
+                  v-if="fullScreen"
                   ></NormalPlayer>
     <MiniPlayer v-if="showMiniPlayer"
                 :playing="playing"
@@ -35,6 +38,7 @@
   </div>
 </template>
 <script lang="ts">
+// @ts-nocheck
 import {
   computed,
   defineComponent,
@@ -53,6 +57,8 @@ import { useStore } from "vuex";
 import { GlobalState } from "@/store";
 import * as Types from "@/store/action-types";
 import { isEmptyObject, shuffle, findIndex, getSongUrl } from "@/api/utils";
+import { getLyricRequest } from "@/api/search";
+import Lyric from "@/api/lyric-parser";
 export default defineComponent({
   components: {
     NormalPlayer,
@@ -92,36 +98,10 @@ export default defineComponent({
       store.dispatch(`player/${Types.SET_CURRENT_INDEX}`, index);
     }
 
-    const getLyric = (id) => {
-      // let lyric = "";
-      // if (currentLyric.current) {
-      //   currentLyric.current.stop();
-      // }
-      // 避免songReady恒为false的情况
-      setTimeout(() => {
-        songReady.value = true;
-      }, 3000);
-      // getLyricRequest(id)
-      //   .then(data => {
-      //     lyric = data.lrc && data.lrc.lyric;
-      //     if(!lyric) {
-      //       currentLyric.current = null;
-      //       return;
-      //     }
-      //     currentLyric.current = new Lyric(lyric, handleLyric, speed);
-      //     currentLyric.current.play();
-      //     currentLineNum.current = 0;
-      //     currentLyric.current.seek(0);
-      //   })
-      //   .catch(() => {
-      //     currentLyric.current = "";
-      //     songReady.current = true;
-      //     audioRef.current.play();
-      //   });
-    };
     function updateTime(e: any) {
       currentTime.value = e.target.currentTime;
     }
+
     // 初始化
     const showMiniPlayer = ref(false);
     let audioRefValue;
@@ -135,7 +115,63 @@ export default defineComponent({
         });
       }
     });
-    // 观察currentIndex变化
+    interface MyCurrentLyric {
+      seek: Function;
+      changeSpeed: Function;
+      togglePlay: Function;
+      play: Function;
+      stop: Function;
+      current: string;
+    }
+    interface LrcIf {
+      lyric: any;
+    }
+    interface MdataIf {
+      lrc: LrcIf;
+    }
+    let currentLyric: MyCurrentLyric
+    let currentLineNum = 0
+
+    // const handleLyric = ({ lineNum, txt }) => {
+    //   if(!currentLyric)return;
+    //   currentLineNum = lineNum;
+    //   currentPlayingLyric.value = txt
+    // };
+    function handleLyric ({lineNum, txt}) {
+      if(!currentLyric)return;
+      currentLineNum = lineNum;
+      currentPlayingLyric.value = txt
+    }
+
+    const getLyric = (id) => {
+      let lyric = "";
+      if (currentLyric) {
+        currentLyric.stop();
+      }
+      // 避免songReady恒为false的情况
+      setTimeout(() => {
+        songReady.value = true;
+      }, 3000);
+      getLyricRequest(id)
+        .then((data) => {
+          lyric = data.lrc && data.lrc.lyric;
+          if(!lyric) {
+            currentLyric.current = "";
+            return;
+          }
+          currentLyric = new Lyric(lyric, handleLyric, speed.value);
+          currentLyric.play();
+          currentLineNum = 0;
+          currentLyric.seek(0);
+          console.log('currentLyric', currentLyric)
+        })
+        .catch(() => {
+          currentLyric.current = "";
+          songReady.value = true;
+          audioRefValue.play();
+        });
+    };
+    // 观察属性变化（类型react的useEffect作用）
     watch(currentIndex, (newVal, oldVal) => {
       if (
         !playList.value.length ||
@@ -177,14 +213,28 @@ export default defineComponent({
     });
     provide("percent11", percent);
 
+    // let currentLyric1 = reactive({})
+    let currentLyric1 = ref(null)
+    watch(fullScreen, (newVal, oldVal) => {
+      if (!fullScreen.value) return;
+      if (currentLyric && currentLyric.lines.length) {
+        handleLyric({
+          lineNum: currentLineNum,
+          txt: currentLyric.lines[currentLineNum].txt
+        });
+      }
+      currentLyric1 = currentLyric
+      console.log('currentLyric1', currentLyric1)
+    })
+
     // const currentLyric = ref(null)
 
     function clickPlaying(e: any, state: boolean) {
       e.stopPropagation();
       togglePlayingDispatch(state);
-      // if(currentLyric.current) {
-      //   currentLyric.current.togglePlay(currentTime*1000);
-      // }
+      if(currentLyric) {
+        currentLyric.togglePlay(currentTime.value*1000);
+      }
     }
     function toggleFullScreenDispatch(data: boolean) {
       store.dispatch(`player/${Types.SET_FULL_SCREEN}`, data);
@@ -203,8 +253,8 @@ export default defineComponent({
     function clickSpeed (newSpeed: number) {
       store.dispatch(`player/${Types.CHANGE_SPEED}`, newSpeed);
       audioRefValue.playbackRate = newSpeed;
-      // currentLyric.current.changeSpeed(newSpeed);
-      // currentLyric.current.seek(currentTime*1000);
+      currentLyric.changeSpeed(newSpeed);
+      currentLyric.seek(currentTime.value*1000);
     }
     function onProgressChange (curPercent: any) {
       const newTime = curPercent * duration.value;
@@ -213,9 +263,9 @@ export default defineComponent({
       if (!playing.value) {
         togglePlayingDispatch(true);
       }
-      // if (currentLyric.current) {
-      //   currentLyric.current.seek(newTime * 1000);
-      // }
+      if (currentLyric) {
+        currentLyric.seek(newTime * 1000);
+      }
     }
 
     const modeText = ref('')
@@ -226,7 +276,7 @@ export default defineComponent({
         //顺序模式
         // changePlayListDispatch(sequencePlayList);
         store.dispatch(`player/${Types.SET_PLAYLIST}`, sequencePlayList.value);
-        const index = findIndex(currentSong, sequencePlayList);
+        const index = findIndex(currentSong, sequencePlayList.value);
         changeCurrentIndexDispatch(index);
         modeText.value = "顺序循环"
       } else if (newMode === 1) {
@@ -236,7 +286,7 @@ export default defineComponent({
         modeText.value = "单曲循环"
       } else if (newMode === 2) {
         //随机播放
-        const newList = shuffle(sequencePlayList);
+        const newList = shuffle(sequencePlayList.value);
         const index = findIndex(currentSong, newList);
         // changePlayListDispatch(newList);
         store.dispatch(`player/${Types.SET_PLAYLIST}`, newList);
@@ -246,15 +296,15 @@ export default defineComponent({
       }
       // changeModeDispatch(newMode);
       store.dispatch(`player/${Types.SET_PLAY_MODE}`, newMode);
-      toastRef.value.show();
+      toastRef.value.showToast();
     }
     function handleLoop () {
       audioRefValue.currentTime = 0;
       togglePlayingDispatch(true);
       audioRefValue.play();
-      // if (currentLyric.current) {
-      //   currentLyric.current.seek(0);
-      // }
+      if (currentLyric) {
+        currentLyric?.seek(0);
+      }
     }
     function handlePrev () {
       if (playList.value.length === 1) {
@@ -300,7 +350,10 @@ export default defineComponent({
       modeText,
       toastRef,
       handlePrev,
-      handleNext
+      handleNext,
+      currentLineNum,
+      currentLyric,
+      currentLyric1
     };
   },
 });
