@@ -42,7 +42,7 @@
                 {{item.txt}}
               </p>
             </template>
-            <p class="text pure">{{currentLyric}}纯音乐，请欣赏。</p>
+            <p class="text pure">纯音乐，请欣赏。</p>
           </div>
         </Scroll>
       </div>
@@ -132,7 +132,6 @@ export default defineComponent({
   setup(props, {emit}) {
     const store = useStore<GlobalState>();
     const { mode, currentLineNum, currentLyric } = toRefs(props) 
-    console.log('currentLyric11', currentLyric?.value)
 
     const currentState = ref('')
 
@@ -155,6 +154,7 @@ export default defineComponent({
       lyricScrollRefVal = lyricScrollRef?.value
     })
     function watchCurrentLineNum () {
+      console.log('currentLineNum', currentLineNum?.value)
       if (!lyricScrollRef.value) return;
       // const bScroll = lyricScrollRefVal.getBScroll();
       const bScroll = lyricScrollRefVal;

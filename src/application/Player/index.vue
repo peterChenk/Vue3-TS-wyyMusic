@@ -214,7 +214,7 @@ export default defineComponent({
     provide("percent11", percent);
 
     // let currentLyric1 = reactive({})
-    let currentLyric1 = ref(null)
+    const currentLyric1 = ref(null)
     watch(fullScreen, (newVal, oldVal) => {
       if (!fullScreen.value) return;
       if (currentLyric && currentLyric.lines.length) {
@@ -223,7 +223,7 @@ export default defineComponent({
           txt: currentLyric.lines[currentLineNum].txt
         });
       }
-      currentLyric1 = currentLyric
+      currentLyric1.value = currentLyric
       console.log('currentLyric1', currentLyric1)
     })
 
