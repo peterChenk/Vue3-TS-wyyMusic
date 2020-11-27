@@ -142,8 +142,13 @@ export default defineComponent({
       // 代理better-scroll的scrollToElement方法
       scroll && scroll.scrollToElement.apply(scroll, ...args)
     }
+    function getBScroll() {
+      if(scroll) {
+        return scroll;
+      }
+    }
     // 子组件暴露给父组件
-    useExpose({ refresh })
+    useExpose({ refresh, getBScroll })
 
     onMounted(() => {
       setTimeout(() => {

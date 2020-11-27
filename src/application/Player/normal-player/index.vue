@@ -37,7 +37,7 @@
           <div class="LyricWrapper lyric_wrapper" :style="{visibility: currentState === 'lyric' ? 'visible' : 'hidden'}">
             <template v-if="currentLyric">
               <p  v-for="(item, index) in currentLyric.lines" :key="item" class="text" :class="{'current': currentLineNum === index}"
-                  :ref="el => { if (el) lyricLineRefs[i] = el }"
+                  :ref="el => { if (el) lyricLineRefs[index] = el }"
                   >
                 {{item.txt}}
               </p>
@@ -139,6 +139,11 @@ export default defineComponent({
 
     const lyricLineRefs = ref([])
 
+    // 确保在每次更新之前重置ref
+    onBeforeUpdate(() => {
+      lyricLineRefs.value = []
+    })
+
     // watch(currentLineNum, (newVal, oldVal) => {
     //   if (!lyricScrollRef.value) return;
     //   const bScroll = lyricScrollRef.value.getBScroll();
@@ -150,29 +155,25 @@ export default defineComponent({
     //   }
     // })
     let lyricScrollRefVal
+    let lyricLineRefsVal
     onMounted(() => {
       lyricScrollRefVal = lyricScrollRef?.value
+      lyricLineRefsVal = lyricLineRefs?.value
     })
     function watchCurrentLineNum () {
-      console.log('currentLineNum', currentLineNum?.value)
       if (!lyricScrollRef.value) return;
-      // const bScroll = lyricScrollRefVal.getBScroll();
-      const bScroll = lyricScrollRefVal;
+      const bScroll1 = lyricScrollRefVal.getBScroll();
+      const bScroll = lyricScrollRefVal.scrollContaninerRef;
       if (currentLineNum && currentLineNum?.value && currentLineNum?.value > 5) {
         let lineEl
         if(currentLineNum?.value){
-          lineEl = lyricLineRefs?.value[currentLineNum?.value - 5];
+          lineEl = lyricLineRefsVal[currentLineNum?.value - 5];
         }
-        bScroll.scrollToElement(lineEl, 1000);
+        bScroll1.scrollToElement(lineEl, 1000);
       } else {
         bScroll.scrollTo(0, 0, 1000);
       }
     }
-
-    // 确保在每次更新之前重置ref
-    onBeforeUpdate(() => {
-      lyricLineRefs.value = []
-    })
 
     function toggleFullScreenDispatch(data: boolean) {
       // console.log('toggleFullScreenDispatch')

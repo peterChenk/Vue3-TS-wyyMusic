@@ -130,18 +130,19 @@ export default defineComponent({
       lrc: LrcIf;
     }
     let currentLyric: MyCurrentLyric
-    let currentLineNum = 0
+    // let currentLineNum = 0
+    const currentLineNum = ref(0)
 
-    // const handleLyric = ({ lineNum, txt }) => {
+    const handleLyric = ({ lineNum, txt }) => {
+      if(!currentLyric)return;
+      currentLineNum.value = lineNum;
+      currentPlayingLyric.value = txt
+    };
+    // function handleLyric ({lineNum, txt}) {
     //   if(!currentLyric)return;
     //   currentLineNum = lineNum;
     //   currentPlayingLyric.value = txt
-    // };
-    function handleLyric ({lineNum, txt}) {
-      if(!currentLyric)return;
-      currentLineNum = lineNum;
-      currentPlayingLyric.value = txt
-    }
+    // }
 
     const getLyric = (id) => {
       let lyric = "";
@@ -161,7 +162,7 @@ export default defineComponent({
           }
           currentLyric = new Lyric(lyric, handleLyric, speed.value);
           currentLyric.play();
-          currentLineNum = 0;
+          currentLineNum.value = 0;
           currentLyric.seek(0);
           console.log('currentLyric', currentLyric)
         })
@@ -219,8 +220,8 @@ export default defineComponent({
       if (!fullScreen.value) return;
       if (currentLyric && currentLyric.lines.length) {
         handleLyric({
-          lineNum: currentLineNum,
-          txt: currentLyric.lines[currentLineNum].txt
+          lineNum: currentLineNum.value,
+          txt: currentLyric.lines[currentLineNum.value].txt
         });
       }
       currentLyric1.value = currentLyric
