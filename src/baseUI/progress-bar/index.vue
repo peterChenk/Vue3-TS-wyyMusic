@@ -14,7 +14,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, toRefs, watch } from 'vue'
+import { defineComponent, inject, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { prefixStyle } from '@/api/utils';
 export default defineComponent({
   props: {
@@ -39,6 +39,11 @@ export default defineComponent({
       startX: 0,
       initiated: false
     }
+    // let touch = reactive({
+    //   left: 0,
+    //   startX: 0,
+    //   initiated: false
+    // })
 
     let progressBarVal
     // if (progressBar.value) {

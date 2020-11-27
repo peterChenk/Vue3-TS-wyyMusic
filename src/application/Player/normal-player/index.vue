@@ -60,7 +60,7 @@
         <span class="time time-l">{{formatPlayTime(currentTime)}}</span>
         <div class="progress-bar-wrapper">
           <ProgressBar
-            :percentChange="onProgressChange"
+            @percentChange="onProgressChange"
           ></ProgressBar>
           <!-- <ProgressBar
             :percent="percent"
