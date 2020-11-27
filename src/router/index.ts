@@ -50,12 +50,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Search',
         component: () => import('../application/Search/index.vue')
       },
+      {
+        path: '/album/:id',
+        name: 'Album',
+        component: () => import('../application/Album/index.vue')
+      }
     ]
-  },
-  {
-    path: '/album/:id',
-    name: 'Album',
-    component: () => import('../application/Album/index.vue')
   },
   {
     path: '/singers/:id',

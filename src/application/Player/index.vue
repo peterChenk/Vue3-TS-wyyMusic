@@ -32,8 +32,8 @@
     <PlayList @clearPreSong="setPreSong"></PlayList>
     <audio ref="audioRef"
            id="h5audio_media"
-           onended="handleEnd"
-           onerror="handleError"></audio>
+           @ended="handleEnd"
+           @error="handleError"></audio>
     <Toast :text="modeText" ref="toastRef"></Toast>
   </div>
 </template>
@@ -59,6 +59,7 @@ import * as Types from "@/store/action-types";
 import { isEmptyObject, shuffle, findIndex, getSongUrl } from "@/api/utils";
 import { getLyricRequest } from "@/api/search";
 import Lyric from "@/api/lyric-parser";
+import { playMode } from "@/api/config";
 export default defineComponent({
   components: {
     NormalPlayer,
@@ -174,6 +175,7 @@ export default defineComponent({
     };
     // 观察属性变化（类型react的useEffect作用）
     watch(currentIndex, (newVal, oldVal) => {
+      debugger
       if (
         !playList.value.length ||
         currentIndex.value === -1 ||
@@ -328,6 +330,20 @@ export default defineComponent({
       changeCurrentIndexDispatch(index);
     }
 
+    function handleEnd () {
+      if (mode.value === playMode.loop) {
+        handleLoop();
+      } else {
+        handleNext();
+      }
+    }
+
+    function handleError () {
+      songReady.value = true;
+      handleNext();
+      alert("播放出错");
+    }
+
     return {
       playing,
       fullScreen,
@@ -354,7 +370,9 @@ export default defineComponent({
       handleNext,
       currentLineNum,
       currentLyric,
-      currentLyric1
+      currentLyric1,
+      handleEnd,
+      handleError
     };
   },
 });

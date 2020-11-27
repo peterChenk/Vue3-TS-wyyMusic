@@ -45,6 +45,7 @@
       :collectCount="currentAlbum.subscribedCount"
       :showCollect="true"
       :showBackground="true"
+      @musicAnimation="musicAnimation"
       >
     </SongsList>
   </div>
@@ -59,6 +60,16 @@ export default defineComponent({
   },
   props: {
     currentAlbum: Object as PropType<Album>
+  },
+  emits: ['music-animation'],
+  setup(props, {emit}) {
+    function musicAnimation (x, y) {
+      emit('music-animation', x, y)
+    }
+
+    return {
+      musicAnimation
+    }
   }
 })
 </script>

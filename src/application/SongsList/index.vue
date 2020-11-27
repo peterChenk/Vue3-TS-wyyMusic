@@ -27,6 +27,9 @@
 import { defineComponent, onBeforeMount, ref } from "vue";
 import { ONE_PAGE_COUNT } from "@/api/config";
 import { getName } from '@/api/utils';
+import { useStore } from 'vuex';
+import { GlobalState } from '@/store';
+import * as Types from '@/store/action-types'
 export default defineComponent({
   props: {
     usePageSplit: String,
@@ -35,7 +38,10 @@ export default defineComponent({
     collectCount: Number,
     showBackground: Boolean
   },
-  setup(props) {
+  emits: ['music-animation'],
+  setup(props, {emit}) {
+    const store = useStore<GlobalState>()
+
     const totalCount = props?.songs?.length
     // let startIndex = ref<number>(0);
     let startIndex = 0;
@@ -43,8 +49,16 @@ export default defineComponent({
     // 判断页数是否超过总数
     const end = props?.usePageSplit ? startIndex + ONE_PAGE_COUNT : props?.songs?.length;
 
-    function selectItem(e: EventTarget, index: number) {
+    function selectItem(e: any, index: number) {
       console.log('selectItem', e)
+      // changePlayListDispatch(songs);
+      store.dispatch(`player/${Types.SET_PLAYLIST}`, props?.songs)
+      // changeSequecePlayListDispatch(songs);
+      store.dispatch(`player/${Types.SET_SEQUECE_PLAYLIST}`, props?.songs)
+      // changeCurrentIndexDispatch(index);
+      store.dispatch(`player/${Types.SET_CURRENT_INDEX}`, index)
+      // musicAnimation(e.nativeEvent.clientX, e.nativeEvent.clientY);
+      emit('music-animation', e.clientX, e.clientY)
     }
 
     function getNames(list: any) {
@@ -54,7 +68,8 @@ export default defineComponent({
     return {
       end,
       getNames,
-      totalCount
+      totalCount,
+      selectItem
     }
   }
 });

@@ -1,5 +1,5 @@
 <template>
-  <div class="Container">
+  <div class="Container" :style="{bottom: play > 0 ? '60px' : '0'}">
     <Header @propsClick="setShowStatusFalse"
             :title="artist.name"
             ref="header"></Header>
@@ -37,6 +37,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<GlobalState>()
+
+    const play = computed(() => store.state.player.playList.length)
 
     const singerId = router.currentRoute.value.params.id
     function getSingerDataDispatch(singerId: any) {
@@ -129,6 +131,7 @@ export default defineComponent({
     }
 
     return {
+      play,
       setShowStatusFalse,
       artist,
       songs,
@@ -151,7 +154,7 @@ export default defineComponent({
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  /* bottom: 0; */
   width: 100%;
   z-index: 100;
   overflow: hidden;

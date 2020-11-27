@@ -1,5 +1,5 @@
 <template>
-  <div class="Container">
+  <div class="Container" :style="{bottom: play > 0 ? '60px' : '0'}">
     <Scroll>
       <div>
         <h1 class="offical">官方榜</h1>
@@ -43,6 +43,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<GlobalState>()
+    const play = computed(() => store.state.player.playList.length)
     const List = computed(() => store.state.rank.rankList)
     const rankList = List.value ? List.value : []
     if (!rankList.length) {
@@ -57,6 +58,7 @@ export default defineComponent({
     }
 
     return {
+      play,
       officialList,
       globalList,
       enterDetail
@@ -69,7 +71,7 @@ export default defineComponent({
   .Container{
     position: fixed;
     top: 90px;
-    bottom: 0;
+    /* bottom: 0; */
     width: 100%;
     .offical,.global {
       margin: 10px 5px;

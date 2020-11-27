@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" :style="{bottom: play > 0 ? '60px' : '0'}">
     <Scroll>
       <div>
         <Slider></Slider>
@@ -12,12 +12,22 @@
 import Scroll from '../../baseUI/scroll/index.vue';
 import Slider from '../../components/slider/index.vue';
 import RecommendList from '../../components/list/index.vue';
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex';
+import { GlobalState } from '@/store';
 export default defineComponent({
   components: {
     Scroll,
     Slider,
     RecommendList
+  },
+  setup () {
+    const store = useStore<GlobalState>()
+    const play = computed(() => store.state.player.playList.length)
+
+    return {
+      play
+    }
   }
 })
 </script>
@@ -27,7 +37,6 @@ export default defineComponent({
     top: 94px;
     left: 0;
     /* bottom: ${props => props.play > 0?"60px": 0}; */
-    bottom: 60px;
     width: 100%;
   }
   .ccrollContainer{

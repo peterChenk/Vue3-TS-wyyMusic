@@ -1,9 +1,10 @@
 <template>
-  <div class="Container">
+  <div class="Container" :style="{bottom: play > 0 ? '60px' : '0'}">
     <Header :title="title" @propsClick="handleBack" :isMarquee="isMarquee" :ref="headerEl"></Header>
     <Scroll :listenScroll="true" :probeType="3" @scroll="handleScroll" ref="songScroll">
-      <AlbumDetail :currentAlbum="currentAlbum.playlist"></AlbumDetail>
+      <AlbumDetail :currentAlbum="currentAlbum.playlist" @musicAnimation="musicAnimation"></AlbumDetail>
     </Scroll>
+    <MusicNote ref="musicNoteRef"></MusicNote>
   </div>
 </template>
 <script lang="ts">
@@ -16,14 +17,18 @@ import { GlobalState } from '@/store';
 import * as Types from '@/store/action-types'
 import router from '@/router';
 import { HEADER_HEIGHT } from '@/api/config';
+import MusicNote from '@/baseUI/music-note/index.vue';
 export default defineComponent({
   components: {
     Header,
     Scroll,
-    AlbumDetail
+    AlbumDetail,
+    MusicNote
   },
   setup() {
     const store = useStore<GlobalState>()
+    const play = computed(() => store.state.player.playList.length)
+
     const id = router.currentRoute.value.params.id
     store.dispatch(`album/${Types.CHANGE_CURRENT_ALBUM}`, id)
     const currentAlbum = computed(() => store.state.album.currentAlbum)
@@ -63,16 +68,26 @@ export default defineComponent({
       }
     }
 
+    const musicNoteRef = ref()
+    function musicAnimation (x, y) {
+      debugger
+      musicNoteRef.value.startAnimation({x, y})
+    }
+
     function handleBack() {
       router.back()
     }
+
     return {
+      play,
       currentAlbum,
       handleBack,
       title,
       isMarquee,
       headerEl,
-      handleScroll
+      handleScroll,
+      musicNoteRef,
+      musicAnimation
     }
   }
 })
@@ -84,7 +99,7 @@ export default defineComponent({
     left: 0;
     right: 0;
     /* bottom: ${props => props.play > 0 ? "60px": 0}; */
-    bottom: 0;
+    /* bottom: 60px; */
     width: 100%;
     z-index: 100;
     overflow: hidden;

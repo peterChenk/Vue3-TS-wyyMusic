@@ -1,5 +1,5 @@
 <template>
-  <div class="Container">
+  <div class="Container" :style="{bottom: play > 0 ? '60px' : '0'}">
     <div className="search_box_wrapper">
       <SearchBox @back="searchBack" v-model:newQuery="query" @handleQuery="handleQuery"></SearchBox>
     </div>
@@ -76,6 +76,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<GlobalState>()
+
+    const play = computed(() => store.state.player.playList.length)
     // 热搜关键词
     const hotList = computed(() => store.state.search.hotList)
     if (!hotList.value.length) {
@@ -132,6 +134,7 @@ export default defineComponent({
     
 
     return {
+      play,
       searchBack,
       query,
       handleQuery,
@@ -156,7 +159,6 @@ export default defineComponent({
     left: 0;
     right: 0;
     /* bottom: ${props => props.play > 0 ? "60px": 0}; */
-    bottom: 0;
     width: 100%;
     z-index: 100;
     overflow: hidden;

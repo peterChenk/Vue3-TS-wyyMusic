@@ -5,7 +5,7 @@
       <horizenItem title='分类(默认热门):' :list="categoryList" @handleClick="handleUpdateCategory" :oldVal="category"></horizenItem>
       <horizenItem title='首字母:' :list="alphaTypesData" @handleClick="handleUpdateAlpha" :oldVal="alpha"></horizenItem>
     </div>
-    <div class="ListContainer">
+    <div class="ListContainer" :style="{bottom: play > 0 ? '60px' : '0'}">>
       <Scroll ref="scrollRef">
         <div class="List">
           <div class="ListItem" v-for="(item, index) in singerList.artists" :key="index" @click="enterDetail(item.id)">
@@ -38,6 +38,8 @@ export default defineComponent({
     const alphaTypesData: any = alphaTypes
 
     const store = useStore<GlobalState>()
+
+    const play = computed(() => store.state.player.playList.length)
 
     const singerList = computed(() => store.state.singers.singerList)
     
@@ -82,6 +84,7 @@ export default defineComponent({
     }
 
     return {
+      play,
       categoryList,
       alphaTypesData,
       category,
@@ -111,7 +114,7 @@ export default defineComponent({
     position: fixed;
     top: 160px;
     left: 0;
-    bottom: 0;
+    /* bottom: 0; */
     overflow: hidden;
     width: 100%;
   }
